@@ -2,7 +2,7 @@ import { Project, JSDoc } from "ts-morph";
 import path from "path";
 import fs from "fs";
 
-const OUTPUT_PATH = "C:/Users/blach/Documents/GitHub/dumpling/test-files";
+const OUTPUT_FOLDER = path.join(__dirname, "..");
 
 const project = new Project({
 	tsConfigFilePath: path.join(__dirname, "..", "include", "tsconfig.json")
@@ -16,13 +16,11 @@ const instanceInterfaces = main
 	.getInterfaces()
 	.filter(i => i !== servicesInterface && i !== instancesInterface && i !== creatableInstancesInterface);
 
-const outputFolder = path.join(OUTPUT_PATH, "..");
-
 function writeFileSync(filePath: string, data: string) {
 	const pathValues = filePath.normalize().split("/");
 	const fileName = pathValues.pop()!;
 
-	let currentDirectory = outputFolder;
+	let currentDirectory = OUTPUT_FOLDER;
 
 	for (const folderName of pathValues) {
 		fs.existsSync(currentDirectory) || fs.mkdirSync(currentDirectory);
@@ -30,7 +28,6 @@ function writeFileSync(filePath: string, data: string) {
 	}
 
 	fs.existsSync(currentDirectory) || fs.mkdirSync(currentDirectory);
-
 	fs.writeFileSync(path.join(currentDirectory, fileName), data);
 }
 
@@ -67,7 +64,10 @@ function processInterface(instanceName: string, docs: Array<JSDoc>, target: stri
 	if (typeInfo) source.unshift("Type = " + typeInfo);
 	source.unshift(`Target = "${instanceName}${target === "index" ? "" : "." + target}"`);
 	source.unshift("+++");
-	writeFileSync(`content/${instanceName}/${target.replace(/^\["/, "").replace(/"]$/, "")}.md`, source.join("\n"));
+	writeFileSync(
+		`content/Instances/${instanceName}/${target.replace(/^\["/, "").replace(/"]$/, "")}.md`,
+		source.join("\n")
+	);
 }
 
 for (const instanceInterface of instanceInterfaces) {

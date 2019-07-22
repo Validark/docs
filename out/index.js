@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ts_morph_1 = require("ts-morph");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-const OUTPUT_PATH = "C:/Users/blach/Documents/GitHub/dumpling/test-files";
+const OUTPUT_FOLDER = "C:/Users/blach/Documents/GitHub/dumpling/" || path_1.default.join(__dirname, "..");
 const project = new ts_morph_1.Project({
     tsConfigFilePath: path_1.default.join(__dirname, "..", "include", "tsconfig.json")
 });
@@ -17,20 +17,16 @@ const creatableInstancesInterface = main.getInterfaceOrThrow("CreatableInstances
 const instanceInterfaces = main
     .getInterfaces()
     .filter(i => i !== servicesInterface && i !== instancesInterface && i !== creatableInstancesInterface);
-const outputFolder = path_1.default.join(OUTPUT_PATH, "..");
-function makeDirectories(...directories) {
-    let currentDirectory = outputFolder;
-    for (const folderName of directories) {
+function writeFileSync(filePath, data) {
+    const pathValues = filePath.normalize().split("/");
+    const fileName = pathValues.pop();
+    let currentDirectory = OUTPUT_FOLDER;
+    for (const folderName of pathValues) {
         fs_1.default.existsSync(currentDirectory) || fs_1.default.mkdirSync(currentDirectory);
         currentDirectory = path_1.default.join(currentDirectory, folderName);
     }
     fs_1.default.existsSync(currentDirectory) || fs_1.default.mkdirSync(currentDirectory);
-    return currentDirectory;
-}
-function writeFileSync(filePath, data) {
-    const pathValues = filePath.normalize().split("/");
-    const fileName = pathValues.pop();
-    fs_1.default.writeFileSync(path_1.default.join(makeDirectories(...pathValues), fileName), data);
+    fs_1.default.writeFileSync(path_1.default.join(currentDirectory, fileName), data);
 }
 function processInterface(instanceName, docs, target, typeInfo) {
     let source = new Array();
@@ -61,7 +57,7 @@ function processInterface(instanceName, docs, target, typeInfo) {
         source.unshift("Type = " + typeInfo);
     source.unshift(`Target = "${instanceName}${target === "index" ? "" : "." + target}"`);
     source.unshift("+++");
-    writeFileSync(`content/${instanceName}/${target.replace(/^\["/, "").replace(/"]$/, "")}.md`, source.join("\n"));
+    writeFileSync(`content/Instances/${instanceName}/${target.replace(/^\["/, "").replace(/"]$/, "")}.md`, source.join("\n"));
 }
 for (const instanceInterface of instanceInterfaces) {
     const instanceName = instanceInterface.getName();
