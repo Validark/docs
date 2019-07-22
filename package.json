@@ -1,0 +1,23 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "description": "Rodocs is a project offering documentating for the Roblox platform. In this repository you'll find documentation on the API and other such features.",
+  "main": "index.js",
+  "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1",
+	"build": "tsc & node out"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Validark/docs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Validark/docs/issues"
+  },
+  "homepage": "https://github.com/Validark/docs#readme",
+  "dependencies": {
+    "ts-morph": "^3.1.3"
+  }
+}
